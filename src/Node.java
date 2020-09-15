@@ -6,9 +6,9 @@ public class Node {
 	private Node nxt;
 	
 	public Node(String s, Node previous, Node next) {
-		String data = s;
-		Node prv = previous;
-		Node nxt = next;
+		data = s;
+		prv = previous;
+		nxt = next;
 		
 	}
 	

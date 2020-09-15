@@ -4,25 +4,28 @@ import java.util.NoSuchElementException;
 public class SimpleLinkedList {
 	
 	private int size;
-	private Node start;
-	private Node stop;
+	private Node start = null;
+	private Node stop = null;
 
 	public SimpleLinkedList() {
 		start = new Node(null, null, null);
 		stop = new Node(null, start, null);
+		start.setNxt(stop);
 		size = 0;
 	}
 	
 	public SimpleLinkedList(List<String> list) {
 		start = new Node(null, null, null);
+		stop = new Node(null, null, null);
 		Node currentNode = start;
 		for(int i = 0; i < list.size(); i++) {
-			Node el = currentNode;
+			//Node el = currentNode;
 			currentNode = currentNode.addAfter(list.get(i));
-			currentNode.setPrv(el);
-			currentNode.setData(list.get(i));
+			//currentNode.setPrv(el);
+			//currentNode.setData(list.get(i));
 		}
 		currentNode.setNxt(stop);
+		stop.setPrv(currentNode);
 		size = list.size();
 	}
 	
@@ -47,10 +50,12 @@ public class SimpleLinkedList {
 	public void clear() {
 		for(int i = size-1; i >= 0; i--) {
 			Node n = getNode(i);
-			n = null;
+			n.getPrv().setNxt(null);
+			n.setPrv(null);
 		}
 		start.setNxt(stop);
 		stop.setPrv(start);
+		size = 0;
 	}
 	
 	public boolean contains(String s) {
@@ -58,16 +63,18 @@ public class SimpleLinkedList {
 	}
 	
 	public String get(int idx) {
-		checkIdx(idx);
+		checkIdx2(idx);
 		Node n = getNode(idx);
 		return n.getData();
 	}
 	
 	public String getFirst() {
+		checkIdx3();
 		return get(0);
 	}
 	
 	public String getLast() {
+		checkIdx3();
 		return get(size-1);
 	}
 	
@@ -75,13 +82,13 @@ public class SimpleLinkedList {
 		Node currentNode = start;
 		for(int i = 0; i < size; i++) {
 			currentNode = currentNode.getNxt();
-			if(currentNode.equals(s)) { return i; }
+			if(currentNode.getData().equals(s)) { return i; }
 		}
 		return -1;
 	}
 	
 	public String remove(int idx) {
-		checkIdx(idx);
+		checkIdx2(idx);
 		Node n = getNode(idx);
 		Node prevNode = n.getPrv();
 		Node nextNode = n.getNxt();
@@ -89,6 +96,7 @@ public class SimpleLinkedList {
 		n = null;
 		prevNode.setNxt(nextNode);
 		nextNode.setPrv(prevNode);
+		size --;
 		return el;
 	}
 	
@@ -112,7 +120,7 @@ public class SimpleLinkedList {
 	}
 	
 	public String set(int idx, String s) {
-		checkIdx(idx);
+		checkIdx2(idx);
 		Node n = getNode(idx);
 		String el = n.getData();
 		n.setData(s);
@@ -146,9 +154,22 @@ public class SimpleLinkedList {
 	
 	private void checkIdx(int idx) {
 		if(idx < 0 || idx > size) { 
-			throw new IndexOutOfBoundsException("Index: " + idx + ", Size " + size);
+			throw new IndexOutOfBoundsException("Index: " + idx + ", Size: " + size);
 		}
 	}
+	
+	private void checkIdx2(int idx) {
+		if(idx < 0 || idx >= size) {
+			throw new IndexOutOfBoundsException("Index: " + idx + ", Size: " + size);
+		}
+	}
+	
+	private void checkIdx3() {
+		if(size == 0) {
+			throw new NoSuchElementException();
+		}
+	}
+	
 	private void checkList() {
 		if(size == 0) {
 			throw new NoSuchElementException();
